@@ -16,8 +16,8 @@ def decryptBlock(ciphertext, N):
         yN = ciphertext[-16:]
         yNm1 = ciphertext[-32:-16]
     else:
-        yN = ciphertext[(-32*N):(-16*N)]
-        yNm1 = ciphertext[(-48*N):(-32*N)]
+        yN = ciphertext[(-16*(N+1)):(-16*N)]
+        yNm1 = ciphertext[(-16*(N+2)):(-16*(N+1))]
 
     yNm1LastByte = yNm1[-1]
 
@@ -29,7 +29,7 @@ def decryptBlock(ciphertext, N):
     f.write(bytes(r_yN))
     f.close()
 
-    while (subprocess.check_output(['python', 'oracle.py', 'crackfile'])[0] != 49):
+    while (subprocess.check_output(['python3', 'oracle.py', 'crackfile'])[0] != 49):
         i += 1
         r[-1] = i
         r_yN = r + yN
@@ -50,7 +50,7 @@ def decryptBlock(ciphertext, N):
         f = open("crackfile", "wb")
         f.write(bytes(test))
         f.close()
-        if (subprocess.check_output(['python', 'oracle.py', 'crackfile'])[0] == 48):
+        if (subprocess.check_output(['python3', 'oracle.py', 'crackfile'])[0] == 48):
             allYes = False
         else:
             k += 1
@@ -78,7 +78,7 @@ def decryptBlock(ciphertext, N):
         f.write(bytes(r_yN))
         f.close()
 
-        while (subprocess.check_output(['python', 'oracle.py', 'crackfile'])[0] != 49):
+        while (subprocess.check_output(['python3', 'oracle.py', 'crackfile'])[0] != 49):
             i += 1
             rTemp[k-1] = i
             r_yN = rTemp + yN
