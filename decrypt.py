@@ -1,6 +1,5 @@
 import secrets
 import subprocess
-import time
 
 def read_binary_file(file_path):
     with open(file_path, 'rb') as file:
@@ -10,7 +9,7 @@ def decryptBlock(ciphertext, N):
     # Decrypt Byte
     i = 0
     
-    r = bytearray([secrets.randbits(8) for _ in range(15)] + [i])
+    r = bytearray([secrets.randbits(8) for byte in range(15)] + [i])
 
     if N == 0:
         yN = ciphertext[-16:]
@@ -37,7 +36,7 @@ def decryptBlock(ciphertext, N):
         f.write(bytes(r_yN))
         f.close()
 
-    #0 to 14
+    #index 0 to 14
     #r1 to r15
     #replace r[k-1] with random byte
     allYes = True
@@ -97,17 +96,16 @@ def decryptBlock(ciphertext, N):
     return decryptedBytes
 
 def decryptMessage():
-    start_time = time.time()
     decrypted = []
     ciphertext = read_binary_file('ciphertext')
+
     numBlocks = len(ciphertext) / 16
     for x in range(0, int(numBlocks) - 1):
         decrypted = decryptBlock(ciphertext, x) + decrypted
-    plaintext = ''.join([chr(i) for i in decrypted]).strip()
-    print(plaintext)
-    end_time = time.time()
-    elapsed_time = end_time - start_time
 
-    print("Elapsed time:", elapsed_time, "seconds")
-    
+    plaintext = ''.join([chr(byte) for byte in decrypted])
+    while not plaintext.isprintable():
+        plaintext = plaintext[:-1] #remove padding
+    print(plaintext)
+
 decryptMessage()
